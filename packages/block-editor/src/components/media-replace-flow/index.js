@@ -85,7 +85,6 @@ const MediaReplaceFlow = ( {
 						onKeyDown={ openOnArrowDown }
 					>
 						{ name }
-						<span className="block-editor-media-replace-flow__indicator" />
 					</Button>
 				</ToolbarGroup>
 			) }
