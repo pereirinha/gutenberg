@@ -48,7 +48,7 @@ describe( 'Embed block inside a locked all parent', () => {
 		await page.waitForSelector( embedInputSelector );
 		await page.click( embedInputSelector );
 		// This URL should not have a trailing slash.
-		await page.keyboard.type( 'https://twitter.com/WordPress' );
+		await page.keyboard.type( 'https://twitter.com/wordpress' );
 		await page.keyboard.press( 'Enter' );
 		// The twitter block should appear correctly.
 		await page.waitForSelector( 'figure.wp-block-embed' );
