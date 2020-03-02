@@ -3,7 +3,7 @@
  */
 const {
 	TRANSLATION_FUNCTIONS,
-	REGEXP_PLACEHOLDER,
+	SPRINTF_PLACEHOLDER_REGEX,
 	getTranslateStrings,
 } = require( '../util' );
 
@@ -39,7 +39,7 @@ module.exports = {
 				let hasPlaceholders = false;
 
 				for ( const candidate of candidates ) {
-					if ( candidate.match( REGEXP_PLACEHOLDER ) ) {
+					if ( candidate.match( SPRINTF_PLACEHOLDER_REGEX ) ) {
 						hasPlaceholders = true;
 						break;
 					}

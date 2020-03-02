@@ -5,6 +5,10 @@
 - New Rule: [`@wordpress/valid-text-domain`](https://github.com/WordPress/gutenberg/blob/master/packages/eslint-plugin/docs/rules/valid-text-domain.md)
 - New Rule: [`@wordpress/no-missing-translator-comments`](https://github.com/WordPress/gutenberg/blob/master/packages/eslint-plugin/docs/rules/no-missing-translator-comments.md)
 
+### Enhancements
+
+- The `@wordpress/valid-sprintf` rule now recognizes mix of ordered and non-ordered placeholders.
+
 ## 4.0.0 (2020-02-10)
 
 ### Breaking Changes
