@@ -29,6 +29,7 @@ import {
 import { useViewportMatch } from '@wordpress/compose';
 import { PluginArea } from '@wordpress/plugins';
 import { __ } from '@wordpress/i18n';
+import { PluginSidebar } from '@wordpress/admin-screen';
 
 /**
  * Internal dependencies
@@ -43,7 +44,6 @@ import FullscreenMode from '../fullscreen-mode';
 import BrowserURL from '../browser-url';
 import Header from '../header';
 import SettingsSidebar from '../sidebar/settings-sidebar';
-import Sidebar from '../sidebar';
 import MetaBoxes from '../meta-boxes';
 import PluginPostPublishPanel from '../sidebar/plugin-post-publish-panel';
 import PluginPrePublishPanel from '../sidebar/plugin-pre-publish-panel';
@@ -145,7 +145,7 @@ function Layout() {
 									</div>
 								) }
 								<SettingsSidebar />
-								<Sidebar.Slot />
+								<PluginSidebar.Slot scope="edit-post/sidebar" />
 							</>
 						)
 					}
