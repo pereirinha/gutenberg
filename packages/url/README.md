@@ -37,6 +37,10 @@ _Returns_
 
 -   `string`: URL with arguments applied.
 
+<a name="buildQueryString" href="#buildQueryString">#</a> **buildQueryString**
+
+Undocumented declaration.
+
 <a name="cleanForSlug" href="#cleanForSlug">#</a> **cleanForSlug**
 
 Performs some basic cleanup of a string for use as a post slug.
@@ -171,6 +175,10 @@ _Returns_
 
 -   `(QueryArgParsed|undefined)`: Query arg value.
 
+<a name="getQueryArgs" href="#getQueryArgs">#</a> **getQueryArgs**
+
+Undocumented declaration.
+
 <a name="getQueryString" href="#getQueryString">#</a> **getQueryString**
 
 Returns the query string part of the URL.
@@ -179,7 +187,6 @@ _Usage_
 
 ```js
 const queryString1 = getQueryString( 'http://localhost:8080/this/is/a/test?query=true#fragment' ); // 'query=true'
-const queryString2 = getQueryString( 'https://wordpress.org#fragment?query=false&search=hello' ); // 'query=false&search=hello'
 ```
 
 _Parameters_

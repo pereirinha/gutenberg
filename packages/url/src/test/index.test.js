@@ -16,6 +16,7 @@ import {
 	getPath,
 	isValidPath,
 	getQueryString,
+	buildQueryString,
 	isValidQueryString,
 	getFragment,
 	isValidFragment,
@@ -27,6 +28,7 @@ import {
 	safeDecodeURI,
 	filterURLForDisplay,
 	cleanForSlug,
+	getQueryArgs,
 } from '../';
 
 describe( 'isURL', () => {
@@ -274,11 +276,6 @@ describe( 'getQueryString', () => {
 	it( 'returns the query string of a URL', () => {
 		expect(
 			getQueryString(
-				'https://user:password@www.test-this.com:1020/test-path/file.extension#anchor?query=params&more'
-			)
-		).toBe( 'query=params&more' );
-		expect(
-			getQueryString(
 				'http://user:password@www.test-this.com:1020/test-path/file.extension?query=params&more#anchor'
 			)
 		).toBe( 'query=params&more' );
@@ -305,12 +302,6 @@ describe( 'getQueryString', () => {
 				'https://andalouses.example/beach?foo[]=bar&foo[]=baz'
 			)
 		).toBe( 'foo[]=bar&foo[]=baz' );
-		expect( getQueryString( 'test.com?foo[]=bar&foo[]=baz' ) ).toBe(
-			'foo[]=bar&foo[]=baz'
-		);
-		expect( getQueryString( 'test.com?foo=bar&foo=baz?test' ) ).toBe(
-			'foo=bar&foo=baz?test'
-		);
 	} );
 
 	it( 'returns undefined when the provided does not contain a url query string', () => {
@@ -331,6 +322,50 @@ describe( 'getQueryString', () => {
 		expect( getQueryString( 'https://#' ) ).toBeUndefined();
 		expect( getQueryString( 'https://?' ) ).toBeUndefined();
 		expect( getQueryString( 'test.com' ) ).toBeUndefined();
+		expect(
+			getQueryString( 'test.com?foo[]=bar&foo[]=baz' )
+		).toBeUndefined();
+		expect(
+			getQueryString( 'test.com?foo=bar&foo=baz?test' )
+		).toBeUndefined();
+	} );
+} );
+
+describe( 'buildQueryString', () => {
+	it( 'builds simple values', () => {
+		const query = buildQueryString( { foo: 'bar', baz: 'quux' } );
+
+		expect( query ).toBe( 'foo=bar&baz=quux' );
+	} );
+
+	it( 'encodes keys and values', () => {
+		const query = buildQueryString( { 'one two': [ 'three four' ] } );
+
+		expect( query ).toBe( 'one%20two[0]=three%20four' );
+	} );
+
+	it( 'builds array of values', () => {
+		const query = buildQueryString( { foo: [ 'one', 'two' ] } );
+
+		expect( query ).toBe( 'foo[0]=one&foo[1]=two' );
+	} );
+
+	it( 'builds object of values', () => {
+		const query = buildQueryString( { foo: { one: 1, two: 2 } } );
+
+		expect( query ).toBe( 'foo[one]=1&foo[two]=2' );
+	} );
+
+	it( 'discards undefined values', () => {
+		const query = buildQueryString( { foo: 'bar', baz: undefined } );
+
+		expect( query ).toBe( 'foo=bar' );
+	} );
+
+	it( 'omits `=` for empty values', () => {
+		const query = buildQueryString( { foo: '', bar: 0 } );
+
+		expect( query ).toBe( 'foo&bar=0' );
 	} );
 } );
 
@@ -504,6 +539,56 @@ describe( 'addQueryArgs', () => {
 	} );
 } );
 
+describe( 'getQueryArgs', () => {
+	it( 'should parse simple query arguments', () => {
+		const url = 'https://andalouses.example/beach?foo=bar&baz=quux';
+
+		expect( getQueryArgs( url ) ).toEqual( {
+			foo: 'bar',
+			baz: 'quux',
+		} );
+	} );
+
+	it( 'should accumulate array of values', () => {
+		const url =
+			'https://andalouses.example/beach?foo[]=zero&foo[]=one&foo[]=two';
+
+		expect( getQueryArgs( url ) ).toEqual( {
+			foo: [ 'zero', 'one', 'two' ],
+		} );
+	} );
+
+	it( 'should accumulate keyed array of values', () => {
+		const url =
+			'https://andalouses.example/beach?foo[1]=one&foo[0]=zero&foo[]=two';
+
+		expect( getQueryArgs( url ) ).toEqual( {
+			foo: [ 'zero', 'one', 'two' ],
+		} );
+	} );
+
+	it( 'should accumulate object of values', () => {
+		const url =
+			'https://andalouses.example/beach?foo[zero]=0&foo[one]=1&foo[]=empty';
+
+		expect( getQueryArgs( url ) ).toEqual( {
+			foo: {
+				'': 'empty',
+				zero: '0',
+				one: '1',
+			},
+		} );
+	} );
+
+	it( 'should gracefully handle empty values', () => {
+		const url = 'https://andalouses.example/beach?&foo';
+
+		expect( getQueryArgs( url ) ).toEqual( {
+			foo: '',
+		} );
+	} );
+} );
+
 describe( 'getQueryArg', () => {
 	it( 'should get the value of an existing query arg', () => {
 		const url = 'https://andalouses.example/beach?foo=bar&bar=baz';
@@ -527,6 +612,7 @@ describe( 'getQueryArg', () => {
 		const url = 'https://andalouses.example/beach?foo=bar&bar=baz#foo';
 
 		expect( getQueryArg( url, 'foo' ) ).toEqual( 'bar' );
+		expect( getQueryArg( url, 'bar' ) ).toEqual( 'baz' );
 	} );
 } );
 
